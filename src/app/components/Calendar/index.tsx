@@ -1,9 +1,14 @@
 import React, { FC, useState } from 'react';
 import styled from 'styled-components';
 import moment, { Moment } from 'moment';
-import { Button, Layout } from 'antd';
+import { Button, Layout, Popover, message } from 'antd';
 import { RouteComponentProps } from 'react-router';
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { ReminderModal } from '../Reminder';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'app/reducers';
+import { ReminderModel } from 'app/models';
+import { useReminderActions } from 'app/actions';
+import { CloseOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 
 const Day = styled.div<{ anotherMonth: boolean }>`
   width: auto;
@@ -26,16 +31,87 @@ const Day = styled.div<{ anotherMonth: boolean }>`
 
 type CalendarDayProps = {
   anotherMonth: boolean
+  reminders: ReminderModel[]
   calendarDate: Moment
   day: number
 }
 
-const CalendarDay: FC<CalendarDayProps> = ({ anotherMonth, calendarDate, day }) => {
+const Circle = styled.div<{ color: string }>`
+  height : 15px;
+  width : 15px;
+  border-radius: 1000px;
+  background-color: ${({ color }) => `${color}`};
+ `
+
+const Reminder = ({ date, color }: { date: Moment, color: string }) => {
+  return (
+    <div style={{ display: 'flex' }}>
+      <Circle color={color} />
+      {date.format('HH:mm')}
+    </div>
+  )
+}
+
+const PopoverContent = ({ reminder }: { reminder: ReminderModel }) => {
+  const dispatch = useDispatch();
+  const reminderActions = useReminderActions(dispatch);
+
+  const deleteReminder = () => {
+    reminderActions.deleteReminder(reminder.id)
+    message.success(`Reminder ${reminder.name} removed!`)
+  }
+
+  const editReminder = () => {
+
+  }
+
+  return (
+    <div>
+      <p>Name: {reminder.name}</p>
+      <p>Date: {reminder.date.format('YYYY-MM-DD')}</p>
+      <p>Time: {reminder.date.format('HH:mm:ss')}</p>
+      <p>City: {reminder.city}</p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', }}>
+        <Button type="primary" danger onClick={deleteReminder}>Delete</Button>
+        <Button type="primary" onClick={editReminder}>Edit</Button>
+      </div>
+    </div>
+  )
+}
+
+const RemoveAllButton = ({ date, day }: { date: Moment, day: number }) => {
+  const dispatch = useDispatch();
+  const reminderActions = useReminderActions(dispatch);
+
+  const removeAll = () => {
+    reminderActions.deleteAllFromDayReminder(
+      { monthYear: `${date.month() + 1}-${date.year()}`, day }
+    )
+  }
+
+  return (
+    <span>
+      <Button onClick={removeAll} type="ghost" danger shape="circle" icon={<CloseOutlined />} size="small" />
+    </span>
+  )
+}
+
+const CalendarDay: FC<CalendarDayProps> = ({ anotherMonth, reminders, calendarDate, day }) => {
+  const remindersToday = reminders ? reminders.filter((reminder) => day === reminder.date.date()) : []
+
   return (
     <Day anotherMonth={anotherMonth}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
         {day}
+        {remindersToday.length > 0 && <RemoveAllButton date={calendarDate} day={day} />}
       </div>
+      {remindersToday.map((item, idx) =>
+        <Popover placement="right" key={idx} title="Reminder - Click to Edit" content={<PopoverContent reminder={item} />}>
+          <div>
+            <Reminder key={item.id} date={item.date} color={item.color} />
+          </div>
+        </Popover>
+      )}
     </Day>
   )
 }
@@ -90,6 +166,14 @@ const Calendar = () => {
 
   const mappedDaysOfMonth = firstDayOfMonth(currentCalendarDateMoment)
 
+  const { reminders } = useSelector((state: RootState) => {
+    const monthYear = `${currentCalendarDateMoment.month() + 1}-${currentCalendarDateMoment.year()}`
+
+    return {
+      reminders: state.reminder[monthYear]
+    };
+  });
+
   const daysOfWeek = moment.weekdays()
 
   const backMonth = () => setCurrentCalendarDate(currentCalendarDateMoment.subtract(1, 'month').format())
@@ -109,7 +193,7 @@ const Calendar = () => {
           <Weekday key={idx}>{item}</Weekday>
         )}
         {mappedDaysOfMonth.map((item, idx) =>
-          <CalendarDay key={idx} day={item.day} calendarDate={currentCalendarDateMoment}
+          <CalendarDay key={idx} day={item.day} calendarDate={currentCalendarDateMoment} reminders={reminders}
             anotherMonth={item.anotherMonth}>{item.day}</CalendarDay>
         )}
       </div>
@@ -126,6 +210,7 @@ export const CalendarScreen = () => (
   <div style={{ width: '100%', marginTop: '100px', marginBottom: '100px' }}>
     <Layout>
       <Layout.Content>
+        <ReminderModal />
         <Calendar />
       </Layout.Content>
     </Layout>
