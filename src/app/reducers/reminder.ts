@@ -8,7 +8,7 @@ const initialState: RootState.ReminderState = {
   '9-2020': [{
     id: '1',
     name: 'teste',
-    color: '#fff',
+    color: '#b80000',
     city: 'Teresopolis',
     date: moment(),
     month: '9',
@@ -17,7 +17,7 @@ const initialState: RootState.ReminderState = {
   {
     id: '2',
     name: 'teste 2',
-    color: '#000',
+    color: '#004dcf',
     city: 'Rio de Janeiro',
     date: moment().add(1, 'day'),
     month: '9',
@@ -50,6 +50,16 @@ export const reminderReducer = handleActions<RootState.ReminderState, any>(
     },
     [ReminderActions.Type.DELETE_ALL_FROM_DAY]: (state, action) => {
       state[action.payload.monthYear] = state[action.payload.monthYear].filter((reminder) => reminder.date.date() !== action.payload.day)
+      return state
+    },
+    [ReminderActions.Type.EDIT_REMINDER]: (state, action) => {
+      const monthYear = `${action.payload.month}-${action.payload.year}`
+      const idx = state[monthYear].findIndex((reminder) => reminder.id === action.payload.id)
+      if (idx > -1) {
+        state[monthYear][idx] = action.payload
+        state[monthYear].sort((a, b) => a.date.valueOf() - b.date.valueOf())
+      }
+
       return state
     },
   },
