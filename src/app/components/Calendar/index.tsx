@@ -9,6 +9,7 @@ import { RootState } from 'app/reducers';
 import { ReminderModel } from 'app/models';
 import { useReminderActions, useReminderModalActions } from 'app/actions';
 import { CloseOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { mapDays } from './utils';
 
 const Day = styled.div<{ anotherMonth: boolean }>`
   width: auto;
@@ -67,12 +68,19 @@ const PopoverContent = ({ reminder }: { reminder: ReminderModel }) => {
 
   const editReminder = () => modalActions.editReminder(reminder)
 
+  let Complement = () => <p>Without weather info</p>
+
+  if (reminder.weatherInfo?.description) {
+    Complement = () => <p>{reminder.weatherInfo?.description} (Min: {reminder.weatherInfo?.min} - Max: {reminder.weatherInfo?.max})</p>
+  }
+
   return (
     <div>
       <p>Name: {reminder.name}</p>
       <p>Date: {reminder.date.format('YYYY-MM-DD')}</p>
       <p>Time: {reminder.date.format('HH:mm:ss')}</p>
       <p>City: {reminder.city}</p>
+      <Complement />
       <div style={{ display: 'flex', justifyContent: 'space-between', }}>
         <Button type="primary" danger onClick={deleteReminder}>Delete</Button>
         <Button type="primary" onClick={editReminder}>Edit</Button>
@@ -135,37 +143,6 @@ const Weekday = styled.div`
     border-right: 1px solid black;
   }
 `
-
-const mapDays = (currentMonth: Moment) => {
-  const ITENS_PER_ROW = 7
-
-  const currentMonthMoment = moment(currentMonth)
-
-  const firstDayThisMonth = parseInt(currentMonthMoment.startOf("month").format("d"))
-  const lastDayOfPreviousMonth = parseInt(currentMonthMoment.subtract(1, 'month').endOf('month').format('DD'))
-  const lastDayOfThisMonth = moment(currentMonth).daysInMonth()
-
-  let result = []
-
-  for (let i = 0; i < firstDayThisMonth; i++) {
-    result.push({ day: lastDayOfPreviousMonth - i, anotherMonth: true });
-  }
-
-  result = result.reverse()
-
-  for (let i = 0; i < lastDayOfThisMonth; i++) {
-    result.push({ day: i + 1, anotherMonth: false });
-  }
-
-  const neededToFillLine = ITENS_PER_ROW - (result.length % ITENS_PER_ROW)
-
-  if (neededToFillLine % 7 !== 0)
-    for (let i = 0; i < neededToFillLine; i++) {
-      result.push({ day: i + 1, anotherMonth: true })
-    }
-
-  return result
-};
 
 const Calendar = () => {
   const [currentCalendarDate, setCurrentCalendarDate] = useState(moment().format())

@@ -4,9 +4,6 @@ This projects will help you to never lose an event, schedule or just a simple ta
 
 # Still Missing
 
-- Add a weather service call from a free API such as ​ Open Weather Map​ , and get the
-weather forecast (ex. Rain) for the date of the calendar reminder based on the city.
-
 - Unit test the functionality.
 
 - Properly handle overflow when multiple reminders appear on the same date.

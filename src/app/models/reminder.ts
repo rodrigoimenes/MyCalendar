@@ -1,3 +1,4 @@
+import { Forecast } from "app/services/getWeatherInfo";
 import { Moment } from "moment";
 
 export interface ReminderModel {
@@ -8,6 +9,7 @@ export interface ReminderModel {
     month: string;
     year: string;
     color: string;
+    weatherInfo?: Forecast
 }
 
 export namespace ReminderModel { }
