@@ -6,7 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SliderPicker } from 'react-color';
 import { useReminderModalActions } from 'app/actions';
 import { RootState } from 'app/reducers';
-import { getWeatherInfo } from 'app/services/getWeatherInfo';
+import { ReminderModel } from 'app/models';
+import { createOrEdit } from './createOrEdit';
 
 export const ReminderModal = () => {
   const dispatch = useDispatch();
@@ -36,11 +37,11 @@ export const ReminderModal = () => {
   }, [reminder]);
 
   const onFinish = async () => {
-    const date = moment(`${day + ' ' + time?.format('HH:mm')}`)
     const reminderFunc = reminder ? reminderActions.editReminder : reminderActions.addReminder
-    const weatherInfo = await getWeatherInfo(city, date)
 
-    const reminderObj = {
+    const date = moment(`${day + ' ' + time?.format('HH:mm')}`)
+
+    const reminderObj: ReminderModel = {
       id: reminder?.id || moment().valueOf().toString(),
       name,
       city,
@@ -48,10 +49,9 @@ export const ReminderModal = () => {
       year: moment(date).year().toString(),
       month: (moment(date).month() + 1).toString(),
       color,
-      weatherInfo,
     }
 
-    reminderFunc(reminderObj)
+    reminderFunc(await createOrEdit(reminderObj))
 
     modalActions.closeModal()
     message.success(`Reminder ${name} ${reminder ? 'edited' : 'created'}!`);

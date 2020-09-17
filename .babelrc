@@ -1,0 +1,23 @@
+{
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "loose": true
+            }
+        ],
+        "@babel/preset-react",
+        "@babel/preset-typescript"
+    ],
+    "plugins": [
+        [
+            "@babel/plugin-transform-typescript",
+            {
+                "allowNamespaces": true
+            }
+        ],
+        [
+            "@babel/plugin-transform-runtime"
+        ]
+    ]
+}

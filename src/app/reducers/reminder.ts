@@ -1,29 +1,8 @@
 import { handleActions } from 'redux-actions';
 import { RootState } from './state';
 import { ReminderActions } from 'app/actions/reminder';
-import moment from 'moment';
 
-// TODO<BeforeDelivery>: Remember to remove this!!!! 
-const initialState: RootState.ReminderState = {
-  '9-2020': [{
-    id: '1',
-    name: 'teste',
-    color: '#b80000',
-    city: 'Teresopolis',
-    date: moment(),
-    month: '9',
-    year: '2020',
-  },
-  {
-    id: '2',
-    name: 'teste 2',
-    color: '#004dcf',
-    city: 'Rio de Janeiro',
-    date: moment().add(1, 'day'),
-    month: '9',
-    year: '2020',
-  }]
-};
+const initialState: RootState.ReminderState = {};
 
 export const reminderReducer = handleActions<RootState.ReminderState, any>(
   {

@@ -4,9 +4,9 @@ This projects will help you to never lose an event, schedule or just a simple ta
 
 # Still Missing
 
-- Unit test the functionality.
-
 - Properly handle overflow when multiple reminders appear on the same date.
+
+- Improve test cases (with Cypress, snapshot testing and more unit tests)
 
 ## Contains
 
@@ -40,6 +40,12 @@ $ yarn
 
 ```
 $ yarn start
+```
+
+## Test
+
+```
+$ yarn test
 ```
 
 ## Build
