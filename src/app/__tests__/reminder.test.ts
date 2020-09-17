@@ -3,6 +3,7 @@ import { createOrEdit } from "app/components/Reminder/createOrEdit"
 import moment from 'moment'
 import axios from 'axios'
 import { reminderReducer } from "app/reducers/reminder";
+import { mocked } from 'ts-jest/utils';
 
 jest.mock('axios');
 
@@ -18,7 +19,7 @@ describe('Create reminders', () => {
       temp: 16
     };
 
-    axios.mockImplementationOnce(() => Promise.resolve({ data: weatherInfoResponse }));
+    mocked(axios).mockImplementationOnce(() => Promise.resolve({ data: weatherInfoResponse } as any));
 
     const reminder = {
       id: '1',
