@@ -1,6 +1,6 @@
 # MyCalendar
 
-This projects will help you to never lose an event, schedule or just a simple task anymore!
+This project will help you to never lose an event, schedule or just a simple task anymore!
 
 # Possible improvements
 
