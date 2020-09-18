@@ -18,7 +18,7 @@ export type WeatherInfo = {
 
 const URL = 'https://api.hgbrasil.com/weather?'
 // Not protected because is a really public key used only in frontend, the correct way is to create a backend to secure the connection
-const KEY = 'cd812fca'
+const KEY = '2fc43461'
 const FIELDS = 'only_results,temp,city_name,forecast,max,min,date,description'
 
 export const getWeatherInfo = async (city: string, date: Moment) => {

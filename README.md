@@ -4,7 +4,7 @@ This projects will help you to never lose an event, schedule or just a simple ta
 
 # Still Missing
 
-- Properly handle overflow when multiple reminders appear on the same date.
+- Visual improvements (:pray:)
 
 - Improve test cases (with Cypress, snapshot testing and more unit tests)
 

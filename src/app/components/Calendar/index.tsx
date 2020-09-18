@@ -56,7 +56,7 @@ const Reminder = ({ date, color }: { date: Moment, color: string }) => {
   )
 }
 
-const PopoverContent = ({ reminder }: { reminder: ReminderModel }) => {
+const PopoverReminderDetails = ({ reminder }: { reminder: ReminderModel }) => {
   const dispatch = useDispatch();
   const reminderActions = useReminderActions(dispatch);
   const modalActions = useReminderModalActions(dispatch);
@@ -89,6 +89,20 @@ const PopoverContent = ({ reminder }: { reminder: ReminderModel }) => {
   )
 }
 
+const ReminderList = ({ reminders }: { reminders: ReminderModel[] }) => {
+  return (
+    <div>
+      {reminders.map((item, idx) =>
+        <Popover placement="top" key={idx} title="Reminder" content={<PopoverReminderDetails reminder={item} />}>
+          <div>
+            <Reminder key={item.id} date={item.date} color={item.color} />
+          </div>
+        </Popover>
+      )}
+    </div>
+  )
+}
+
 const RemoveAllButton = ({ date, day }: { date: Moment, day: number }) => {
   const dispatch = useDispatch();
   const reminderActions = useReminderActions(dispatch);
@@ -109,7 +123,10 @@ const RemoveAllButton = ({ date, day }: { date: Moment, day: number }) => {
 }
 
 const CalendarDay: FC<CalendarDayProps> = ({ anotherMonth, reminders, calendarDate, day }) => {
+  const LIMIT_PER_DAY = 3
+
   const remindersToday = reminders && !anotherMonth ? reminders.filter((reminder) => day === reminder.date.date()) : []
+  const hiddenReminders = remindersToday.length - LIMIT_PER_DAY
 
   return (
     <Day anotherMonth={anotherMonth}>
@@ -119,11 +136,10 @@ const CalendarDay: FC<CalendarDayProps> = ({ anotherMonth, reminders, calendarDa
         </div>
         {remindersToday.length > 0 && <RemoveAllButton date={calendarDate} day={day} />}
       </div>
-      {remindersToday.map((item, idx) =>
-        <Popover placement="top" key={idx} title="Reminder" content={<PopoverContent reminder={item} />}>
-          <div>
-            <Reminder key={item.id} date={item.date} color={item.color} />
-          </div>
+      <ReminderList reminders={remindersToday.splice(0, LIMIT_PER_DAY)} />
+      {hiddenReminders > 0 && (
+        <Popover placement="top" trigger="click" title={`Day ${day}`} content={<ReminderList reminders={remindersToday} />}>
+          <div style={{ textAlign: 'center', marginTop: '5px', cursor: 'pointer' }}>more {hiddenReminders}</div>
         </Popover>
       )}
     </Day>
