@@ -2,11 +2,15 @@
 
 This projects will help you to never lose an event, schedule or just a simple task anymore!
 
-# Still Missing
-
-- Visual improvements (:pray:)
+# Possible improvements
 
 - Improve test cases (with Cypress, snapshot testing and more unit tests)
+
+# API Use
+
+- Please keep in mind im using a public key, so its fixed in the code.
+
+- You can search only 10 different cities per day (or 24h in case, for free plan)
 
 ## Contains
 

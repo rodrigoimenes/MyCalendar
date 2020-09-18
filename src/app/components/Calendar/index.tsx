@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import styled from 'styled-components';
 import moment, { Moment } from 'moment';
-import { Button, Layout, Popover, message, Tooltip } from 'antd';
+import { Button, Layout, Popover, message, Tooltip, DatePicker } from 'antd';
 import { RouteComponentProps } from 'react-router';
 import { ReminderModal } from '../Reminder';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,12 +14,13 @@ import { mapDays } from './utils';
 const Day = styled.div<{ anotherMonth: boolean }>`
   width: auto;
   height: 120px;
-  border-bottom: 1px solid black;
-  border-left: 1px solid black;
+  border-bottom: 1px solid #b7b7b7;
+  border-left: 1px solid #b7b7b7;
   flex: 0 0 14%;
+  background-color: #fff;
   
   &:nth-child(7n) {
-    border-right: 1px solid black;
+    border-right: 1px solid #b7b7b7;
     background-color: lightgray;
     color: blue;
   }
@@ -27,7 +28,7 @@ const Day = styled.div<{ anotherMonth: boolean }>`
     background-color: lightgray;
     color: blue;
   }
-  color: ${({ anotherMonth }) => `${anotherMonth ? 'gray !important' : 'black'}`};
+  color: ${({ anotherMonth }) => `${anotherMonth ? '#b7b7b7 !important' : '#252525'}`};
 `;
 
 type CalendarDayProps = {
@@ -38,8 +39,8 @@ type CalendarDayProps = {
 }
 
 const Circle = styled.div<{ color: string }>`
-  height : 15px;
-  width : 15px;
+  height : 10px;
+  width : 10px;
   border-radius: 1000px;
   background-color: ${({ color }) => `${color}`};
   margin-right: 10px;
@@ -49,7 +50,7 @@ const Circle = styled.div<{ color: string }>`
 
 const Reminder = ({ date, color }: { date: Moment, color: string }) => {
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
       <Circle color={color} />
       {date.format('HH:mm')}
     </div>
@@ -179,12 +180,19 @@ const Calendar = () => {
   const backMonth = () => setCurrentCalendarDate(currentCalendarDateMoment.subtract(1, 'month').format())
   const nextMonth = () => setCurrentCalendarDate(currentCalendarDateMoment.add(1, 'month').format())
 
+  const onChangeDate = (_date: Moment | null, dateString: string) => {
+    setCurrentCalendarDate(moment(dateString).format())
+  }
+
   return (
     <div style={{ margin: 'auto', width: '850px' }}>
       <div style={{ justifyContent: 'space-between', display: 'flex', alignItems: 'center', fontSize: '20px', marginRight: '16px', marginBottom: '25px' }}>
-        <Button onClick={backMonth} type="primary" icon={<LeftOutlined />} size="large" />
-        {currentCalendarDateMoment.format('MMMM - YYYY')}
-        <Button onClick={nextMonth} type="primary" icon={<RightOutlined />} size="large" />
+        <Button.Group>
+          <Button onClick={backMonth} type="default" icon={<LeftOutlined />} size="large" />
+          <DatePicker allowClear={false} onChange={onChangeDate} value={moment(currentCalendarDateMoment)} picker="month" format="MMMM - YYYY" />
+          <Button onClick={nextMonth} type="default" icon={<RightOutlined />} size="large" />
+        </Button.Group>
+        <ReminderModal />
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
         {daysOfWeek.map((item, idx) =>
@@ -206,10 +214,9 @@ export namespace CalendarScreen {
 
 export const CalendarScreen = () => (
   <div style={{ width: '100%', marginTop: '30px', marginBottom: '100px' }}>
-    <Layout style={{ backgroundColor: 'white' }}>
+    <Layout style={{ backgroundColor: '#fff' }}>
       <Layout.Content>
         <Calendar />
-        <ReminderModal />
       </Layout.Content>
     </Layout>
   </div>

@@ -37,6 +37,15 @@ export const ReminderModal = () => {
   }, [reminder]);
 
   const onFinish = async () => {
+    let error = ''
+    if (!name) error = 'name'
+    else if (!city) error = 'city'
+
+    if (error) {
+      message.error(`You need to provide a ${error}`);
+      return
+    }
+
     const reminderFunc = reminder ? reminderActions.editReminder : reminderActions.addReminder
 
     const date = moment(`${day + ' ' + time?.format('HH:mm')}`)
@@ -73,11 +82,10 @@ export const ReminderModal = () => {
       <div style={{
         justifyContent: 'center',
         display: 'flex',
-        marginTop: '20px'
       }}>
-        <Button type="primary" onClick={showModal}>
+        <Button type="primary" onClick={showModal} size="large">
           Create reminder
-      </Button>
+        </Button>
       </div>
       <Modal
         title={`${reminder ? 'Edit' : 'Create'} reminder`}
@@ -86,7 +94,7 @@ export const ReminderModal = () => {
         onCancel={closeModal}
         okText={reminder ? 'Edit' : 'Create'}
       >
-        <Form layout="horizontal">
+        <Form layout="horizontal" labelCol={{ span: 6 }} onFinish={onFinish}>
           <Form.Item label="Name" required>
             <Input value={name} maxLength={30} style={{ width: '250px' }}
               onChange={e => setName(e.target.value)} />

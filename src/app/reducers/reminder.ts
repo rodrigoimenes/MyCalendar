@@ -2,7 +2,7 @@ import { handleActions } from 'redux-actions';
 import { RootState } from './state';
 import { ReminderActions } from 'app/actions/reminder';
 
-const initialState: RootState.ReminderState = {};
+const initialState: RootState.ReminderState = {}
 
 export const reminderReducer = handleActions<RootState.ReminderState, any>(
   {
@@ -28,7 +28,9 @@ export const reminderReducer = handleActions<RootState.ReminderState, any>(
       return state
     },
     [ReminderActions.Type.DELETE_ALL_FROM_DAY]: (state, action) => {
-      state[action.payload.monthYear] = state[action.payload.monthYear].filter((reminder) => reminder.date.date() !== action.payload.day)
+      state[action.payload.monthYear] = state[action.payload.monthYear].filter(
+        (reminder) => reminder.date.date() !== action.payload.day
+      )
       return state
     },
     [ReminderActions.Type.EDIT_REMINDER]: (state, action) => {
